@@ -4,6 +4,7 @@ import { Header } from "./components/Header/Header"
 import { Instructions } from "./components/Instructions/Instructions"
 import { Chip } from "./components/Chip/Chip"
 import { useState } from "react"
+import { NutritionalLabel } from "./components/NutritionalLabel/NutritionalLabel"
 
 import { createDataSet } from "./data/dataset"
 import "./App.css"
@@ -25,20 +26,57 @@ export const appInfo = {
 }
 // or this!
 const { data, categories, restaurants } = createDataSet()
-
 export function App() {
-  const [selectedCategory, setSelectedCategory] = React.useState(null)
+
+  const [selectedCategory, setSelectedCategory] = useState(0)
+
+  /*
   const selectCategory = (category) => {
     setSelectedCategory(category)
+    console.log("selectedCategory: ", selectedCategory)
   }
+  */
 
-  const [selectedRestaurant, setSelectedRestaurant] = React.useState(null)
+  const [selectedRestaurant, setSelectedRestaurant] = useState(0)
+
+  /*
   const selectRestaurant = (restaurant) => {
     setSelectedRestaurant(restaurant)
+    console.log("selectedRestaurant: ", selectedRestaurant)
+  }
+  */
+
+  const [selectedMenuItem, setSelectedMenuItem] = useState(0)
+
+  /*
+  const selectMenuItem = (menuItem) => {
+    setSelectedMenuItem(menuItem)
+
+    console.log(selectedMenuItem);
+  }
+  */
+
+  const instructionsToDisplay = () => {
+    if(selectedRestaurant === 0 && selectedCategory === 0){
+      return appInfo.instructions.start
+    } else if(selectedRestaurant === 0) {
+      return appInfo.instructions.onlyCategory
+    } else if(selectedCategory === 0) {
+      return appInfo.instructions.onlyRestaurant
+    } else if(selectedMenuItem === 0) {
+      return appInfo.instructions.noSelectedItem
+    } else {
+      return appInfo.instructions.allSelected
+    }
   }
 
-  var currentMenuItems;
-  console.log(data);
+ const currentMenuItems = data.filter(item => {
+    return (
+      item.food_category == selectedCategory &&
+      item.restaurant == selectedRestaurant
+    )
+  });
+
   return (
     <main className="App">
       {/* CATEGORIES COLUMN */}
@@ -51,7 +89,7 @@ export function App() {
                     label = {category}
                     
                     isActive = {selectedCategory === category}
-                    onClick = {() => selectCategory(category)}/>
+                    onClick = {() => setSelectedCategory(category)}/>
             )          
             })}
         </div>
@@ -73,23 +111,36 @@ export function App() {
               <Chip key = {restaurant}
                     label = {restaurant}
                     isActive = {selectedRestaurant === restaurant}
-                    onClick = {() => selectRestaurant(restaurant)}/>
+                    onClick = {() => setSelectedRestaurant(restaurant)}/>
             )      
             })}
             </div>
         </div>
 
-        <Instructions instructions = { appInfo.instructions.start } />
+        <Instructions instructions = { instructionsToDisplay() } />
 
         {/* MENU DISPLAY */}
         <div className="MenuDisplay display">
           <div className="MenuItemButtons menu-items">
             <h2 className="title">Menu Items</h2>
             {/* YOUR CODE HERE */}
+            {currentMenuItems.map((item) => {
+              return (
+                <Chip key = {item.item_name}
+                      label = {item.item_name}
+                      isActive = {selectedMenuItem === item}
+                      onClick = {() => setSelectedMenuItem(item)}
+                      />
+              )
+            })}
           </div>
 
           {/* NUTRITION FACTS */}
-          <div className="NutritionFacts nutrition-facts">{/* YOUR CODE HERE */}</div>
+          <div className="NutritionFacts nutrition-facts">
+            {/* YOUR CODE HERE */}
+            <NutritionalLabel item = {selectedMenuItem}
+            />
+          </div>
         </div>
 
         <div className="data-sources">
