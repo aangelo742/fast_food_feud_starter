@@ -89,7 +89,16 @@ export function App() {
                     label = {category}
                     
                     isActive = {selectedCategory === category}
-                    onClick = {() => setSelectedCategory(category)}/>
+                    onClick = {() => {
+                      setSelectedCategory(category)
+                      setSelectedMenuItem(0)
+                    }}
+
+                    onClose = {(e) => {
+                      e.stopPropagation()
+                      setSelectedCategory(0)
+                    }}
+                    />
             )          
             })}
         </div>
@@ -111,7 +120,16 @@ export function App() {
               <Chip key = {restaurant}
                     label = {restaurant}
                     isActive = {selectedRestaurant === restaurant}
-                    onClick = {() => setSelectedRestaurant(restaurant)}/>
+                    onClick = {() => {
+                      setSelectedRestaurant(restaurant)
+                      setSelectedMenuItem(0)        
+                    }}
+
+                    onClose = {(e) => {
+                      e.stopPropagation()
+                      setSelectedRestaurant(0)
+                    }}
+                    />
             )      
             })}
             </div>
@@ -130,6 +148,10 @@ export function App() {
                       label = {item.item_name}
                       isActive = {selectedMenuItem === item}
                       onClick = {() => setSelectedMenuItem(item)}
+                      onClose = {(e) => {
+                        e.stopPropagation()
+                        setSelectedMenuItem(0)
+                      }}
                       />
               )
             })}
